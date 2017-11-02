@@ -23,8 +23,6 @@ public class main {
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) { 
             while (listening) {
             	System.out.println("hi");
-            	Socket newS = serverSocket.accept();
-            	System.out.println("hi2");
                 new ClientThread(serverSocket.accept()).start();
                 System.out.print("connection made");
             }
