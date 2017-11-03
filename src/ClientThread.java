@@ -1,7 +1,6 @@
 
 import java.net.*;
 import java.io.*;
-import java.util.Scanner;
 public class ClientThread extends Thread {
     private Socket socket = null;
     public ClientThread(Socket socket) {
@@ -11,25 +10,29 @@ public class ClientThread extends Thread {
     public void run() {
     	boolean alive=true;
     	String chatroom,alias,clientIP,port;
+    	chatroom=null;
+    	alias=null;
         try (
             DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
             BufferedReader in = new BufferedReader(
                 new InputStreamReader(
                     socket.getInputStream()));
         ) {
-        	System.out.println("howdy");
-        	//BufferedReader readChat = new BufferedReader("chat.txt");
+        	
+        	FileReader fr = new FileReader("chat.txt"); 
+        	BufferedReader readChat = new BufferedReader(fr);
         	PrintWriter chatWriter = new PrintWriter("chat.txt", "UTF-8");
-            String inputLine, outputLine;
+            String inputLine, outputLine,message;
+            inputLine=null;
             while (alive) {
+            	
             	inputLine=in.readLine();
+            	System.out.println(inputLine);
             	if(inputLine!=null){
             		if(inputLine.contains("HELO")){
-            			
+       			
             			outputLine= "HELO"+inputLine.substring("HELO".length())+"\nIP:134.226.50.34\nPort:1234\nStudentID:14316993";
-            			System.out.println(outputLine);
             			outStream.write(outputLine.getBytes());
-            			System.out.println("helo");
             		}
             		else if(inputLine.contains("KILL_SERVICE")){
             			alive=false;
@@ -42,8 +45,9 @@ public class ClientThread extends Thread {
             			clientIP=inputLine.substring("CLIENT_IP: ".length());
             			in.readLine();
             			inputLine=in.readLine();
+            			
             			alias = inputLine.substring("CLIENT_NAME: ".length());
-            			System.out.println(chatroom);
+            			System.out.println(alias);
             			outputLine="JOINED_CHATROOM: "+chatroom+"\n"+
       						  "SERVER_IP: 134.226.50.34\n"+
     						  "PORT: 1234\n"+
@@ -51,6 +55,29 @@ public class ClientThread extends Thread {
     						  "JOIN_ID: 0\n\n";
             			outStream.write(outputLine.getBytes());
             			System.out.println("boop");
+            		}
+            		else if(inputLine.contains("LEAVE_CHATROOM: ")){
+            			if(inputLine.substring(inputLine.indexOf("LEAVE_CHATROOM: ")).equals(chatroom)){
+            				chatroom=null;
+            				outputLine="LEFT_CHATROOM: [ROOM_REF]\n"+
+            				"JOIN_ID: 0\n\n";
+            				outStream.write(outputLine.getBytes());
+            			}
+            		}
+            		else if(inputLine.contains("CHAT:")){
+            			//inputLine=in.readLine();//TODO proper implementation
+            			//inputLine=in.readLine();//TODO
+            			message=inputLine;
+            			while(!inputLine.contains("\n\n")){
+            				inputLine=in.readLine();
+            				message+=inputLine;
+            			}
+            			outputLine="CHAT: "+chatroom+"\n"+
+            			"CLIENT_NAME: "+alias+"\n"+
+            			"MESSAGE: "+message;
+            			System.out.println("gets here");
+            			outStream.write(outputLine.getBytes());
+            			
             		}
             	}
             }
