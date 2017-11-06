@@ -19,6 +19,7 @@ public class ClientThread extends Thread {
                     socket.getInputStream()));
         ) {
         	
+        	
         	FileReader fr = new FileReader("chat.txt"); 
         	BufferedReader readChat = new BufferedReader(fr);
         	PrintWriter chatWriter = new PrintWriter("chat.txt", "UTF-8");
