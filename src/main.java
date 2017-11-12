@@ -1,4 +1,4 @@
-
+import java.util.ArrayList;
 import java.net.*;
 import java.io.*;
  
@@ -14,8 +14,7 @@ public class main {
       
        
         boolean listening = true;
-        File chat = new File("chat.txt"); 
-        chat.createNewFile();
+        ChatSystem system = new ChatSystem();
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) { 
             while (listening) {
             	System.out.println("hi");
