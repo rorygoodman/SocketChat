@@ -3,9 +3,12 @@ import java.net.*;
 import java.io.*;
 public class ClientThread extends Thread {
     private Socket socket = null;
-    public ClientThread(Socket socket) {
+    private ChatSystem system = null;
+    public ClientThread(Socket socket,ChatSystem system) {
         super("main");
         this.socket = socket;
+        this.system=system;
+        
     }   
     public void run() {
     	boolean alive=true;
@@ -18,10 +21,6 @@ public class ClientThread extends Thread {
                 new InputStreamReader(
                     socket.getInputStream()));
         ) {
-        	
-        	
-        	FileReader fr = new FileReader("chat.txt"); 
-        	BufferedReader readChat = new BufferedReader(fr);
         	PrintWriter chatWriter = new PrintWriter("chat.txt", "UTF-8");
             String inputLine, outputLine,message;
             inputLine=null;
@@ -41,13 +40,15 @@ public class ClientThread extends Thread {
             		}
             		else if(inputLine.contains("JOIN_CHATROOM")){
             			chatroom = inputLine.substring(inputLine.indexOf("JOIN_CHATROOM: ")+15, inputLine.length());
+            			if(!system.chatExists(chatroom)){
+            				system.addRoom(chatroom);
+            			}
             			inputLine=in.readLine();
             			System.out.println(inputLine);
             			clientIP=inputLine.substring("CLIENT_IP: ".length());
             			in.readLine();	
             			inputLine=in.readLine();
             			System.out.println(inputLine);
-            			
             			alias = inputLine.substring("CLIENT_NAME: ".length());
             			System.out.println(alias);
             			outputLine="JOINED_CHATROOM: "+chatroom+"\n"+
@@ -63,7 +64,7 @@ public class ClientThread extends Thread {
             		}
             		else if(inputLine.contains("CHAT:")){
             			inputLine=in.readLine();//TODO proper implementation
-            			inputLine=in.readLine();//TODO
+            			inputLine=in.readLine();
             			message=inputLine;
             			while(!inputLine.contains("\n\n")){
             				inputLine=in.readLine();
@@ -99,5 +100,6 @@ public class ClientThread extends Thread {
             e.printStackTrace();
         }
     }
+    void checkMessages
 }
 
