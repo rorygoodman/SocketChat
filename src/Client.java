@@ -1,14 +1,13 @@
 
 public class Client {
-	int IP;
-	String currentChat;
+	String IP;
 	boolean connected;
 	String name;
-	
-	public Client(int IP, boolean connected,String name,String currentChat){
+	int joinID;
+	public Client(String IP, boolean connected,String name,int joinID){
 		this.IP=IP;
 		this.connected=connected;
 		this.name=name;
-		this.currentChat=currentChat;
+		this.joinID=joinID;
 	}
 }

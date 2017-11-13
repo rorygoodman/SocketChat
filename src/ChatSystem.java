@@ -29,5 +29,21 @@ public class ChatSystem {
 		locked=false;
 		return false;
 	}
+	
+	public int chatIndex(String chatname){
+		while(locked){
+			
+		}
+		locked=true;
+		int size=chatrooms.size();
+		for(int i=0;i<size;i++){
+			if(chatname.equals(chatrooms.get(i).name)){
+				locked=false;
+				return i;
+			}
+		}
+		locked=false;
+		return -1;
+	}
 
 }
