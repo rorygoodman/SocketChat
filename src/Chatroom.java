@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.net.*;
 import java.util.HashMap;
 public class Chatroom {
 	String name;
@@ -15,13 +16,31 @@ public class Chatroom {
 		messages=new ArrayList<String>();
 		numMessages = 0;
 	}
-	public void addClient(String clientIP,String clientName){
+	public void addClient(String clientIP,String clientName,Socket socket){
 		while(locked){
 			
 		}
 		locked=true;
-		clients.add(new Client(clientIP,true,clientName,numJoins));
+		clients.add(new Client(clientIP,true,clientName,numJoins,socket));
 		numJoins++;
+		locked=false;
+		return;
+	}
+	public void removeClient(String clientName){
+		while(locked){
+			
+		}
+		locked=true;
+		int clientIndex=-1;
+		for(int i=0;i<clients.size();i++){
+			if(clients.get(i).name.equals(clientName)){
+				clientIndex=i;
+			}
+		}
+		clients.remove(clientIndex);
+		if(clientIndex == -1){
+			System.out.println("NOT REMOVED");
+		}
 		locked=false;
 		return;
 	}
@@ -39,19 +58,6 @@ public class Chatroom {
 		}
 		locked=false;
 		return null;
-	}
-	public ArrayList<String> getMessages(int lastSeen){
-		return (ArrayList<String>)messages.subList(lastSeen, messages.size());
-		
-	}
-	public void sendMessage(String message){
-		while(locked){
-			
-		}
-		locked=true;
-		messages.add(message);
-		locked=false;
-		return;
 	}
 	                                                                  
 }
