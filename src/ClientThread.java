@@ -34,7 +34,7 @@ public class ClientThread extends Thread {
             	if(inputLine!=null){
             		if(inputLine.contains("HELO")){
        			
-            			outputLine= "HELO"+inputLine.substring("HELO".length())+"\nIP: 134.226.50.34 \nPort:1234\nStudentID:14316993";
+            			outputLine= "HELO"+inputLine.substring("HELO".length())+"\nIP: 134.226.50.43 \nPort:1234\nStudentID:14316993";
             			outStream.write(outputLine.getBytes());
             		}
             		else if(inputLine.contains("KILL_SERVICE")){
@@ -103,8 +103,17 @@ public class ClientThread extends Thread {
             				
             		}
             		else if(inputLine.contains("DISCONNECT: ")){
-            			System.out.println("ERROR");
-            			outStream.write("DISCONNECTED".getBytes());
+            			Iterator it = chatrooms.entrySet().iterator();
+            			String disconnectMessage; 
+            		    while (it.hasNext()) {
+            		        Map.Entry pair = (Map.Entry)it.next();
+            		        disconnectMessage= "CHAT: "+pair.getKey()+"\n"+
+                                	"CLIENT_NAME: "+alias+"\n"+
+                                	"MESSAGE: "+alias+" LEFT\n\n";
+            		        sendMessage(disconnectMessage,(int)pair.getKey());
+                        	
+                        	
+        				}
             			socket.close();
             		}
             		else{
