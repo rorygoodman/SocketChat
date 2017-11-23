@@ -11,13 +11,11 @@ public class main {
     }
         int portNumber = Integer.parseInt(args[0]);
         System.out.println(portNumber);
-      
-       
+ 
         boolean listening = true;
-        ChatSystem system = new ChatSystem();
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) { 
             while (listening) {
-            	System.out.println("hi");
+            	//connect new client
                 new ClientThread(serverSocket.accept()).start();
                 System.out.print("connection made");
             }

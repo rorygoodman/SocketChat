@@ -127,9 +127,7 @@ public class ClientThread extends Thread {
             		}
             		//checking for any incorrect first lines of messages
             		else{
-            			String errorString="ERROR_CODE: 1\n"+
-            					"ERROR_DESCRIPTION: Invalid opening line";
-            			outStream.write(errorString.getBytes());
+            			
             		}	
         		   }
          
