@@ -1,1 +1,0 @@
-javac main.java $1;
