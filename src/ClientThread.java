@@ -7,9 +7,7 @@ public class ClientThread extends Thread {
     private static ChatSystem system = new ChatSystem();
     public ClientThread(Socket socket) {
         super("main");
-        this.socket = socket;
-       // this.system=system;
-        
+        this.socket = socket;        
     }   
     public void run() {
     	boolean alive=true;
@@ -23,7 +21,7 @@ public class ClientThread extends Thread {
                 new InputStreamReader(
                     socket.getInputStream()));
         ) {
-            String inputLine, outputLine,message;
+            String inputLine, outputLine;
             int chatIndex;
             inputLine=null;
             outputLine=null;
@@ -32,16 +30,23 @@ public class ClientThread extends Thread {
             	System.out.println(inputLine);
             	
             	if(inputLine!=null){
+            		//Initial connection test
             		if(inputLine.contains("HELO")){
-       			
-            			outputLine= "HELO"+inputLine.substring("HELO".length())+"\nIP: 134.226.50.43 \nPort:1234\nStudentID:14316993";
+            			String IPString=InetAddress.getLocalHost().toString();
+            			IPString = IPString.substring(IPString.indexOf('/')+1);
+            			
+            			outputLine= "HELO"+inputLine.substring("HELO".length())+
+            					"\nIP: "+IPString+
+            					" \nPort:1234\nStudentID:14316993";
             			outStream.write(outputLine.getBytes());
             		}
+            		//Kills whole system
             		else if(inputLine.contains("KILL_SERVICE")){
             			alive=false;
             			socket.close();
             			System.exit(0);
             		}
+            		//Client joins chat-room
             		else if(inputLine.contains("JOIN_CHATROOM")){
             			chatroom = inputLine.substring(inputLine.indexOf("JOIN_CHATROOM: ")+15, inputLine.length());
             			chatIndex = system.chatIndex(chatroom);
@@ -69,6 +74,7 @@ public class ClientThread extends Thread {
             					"MESSAGE: "+alias+" JOINED\n\n";
             			sendMessage(outputLine,chatIndex);
             		}
+            		//Client sends chat message
             		else if(inputLine.contains("CHAT:")){
             			int chatToMessage=Integer.parseInt(inputLine.substring("CHAT: ".length()));
             			inputLine=in.readLine();
@@ -83,6 +89,7 @@ public class ClientThread extends Thread {
             			System.out.println("gets here");
             			sendMessage(outputLine,chatToMessage);
             		}
+            		//Client leaves chat-room
             		else if(inputLine.contains("LEAVE_CHATROOM: ")){
             				int leaveRef=Integer.parseInt(inputLine.substring("LEAVE_CHATROOM: ".length()));
             				int joinID = Integer.parseInt(in.readLine().substring("JOIN_ID: ".length()));
@@ -102,6 +109,8 @@ public class ClientThread extends Thread {
             				}
             				
             		}
+            		//Client disconnects from server
+            		//Sends leave chat-room message in all clients' chat-rooms
             		else if(inputLine.contains("DISCONNECT: ")){
             			Iterator it = chatrooms.entrySet().iterator();
             			String disconnectMessage; 
@@ -116,8 +125,11 @@ public class ClientThread extends Thread {
         				}
             			socket.close();
             		}
+            		//checking for any incorrect first lines of messages
             		else{
-            			
+            			String errorString="ERROR_CODE: 1\n"+
+            					"ERROR_DESCRIPTION: Invalid opening line";
+            			outStream.write(errorString.getBytes());
             		}	
         		   }
          
@@ -126,6 +138,7 @@ public class ClientThread extends Thread {
             e.printStackTrace();
         }
     }
+    //Sends message to every client connected to that chat
     void sendMessage(String message,int roomRef){
     	for(int i=0;i<system.chatrooms.get(roomRef).clients.size();i++){
     		try{
@@ -139,6 +152,7 @@ public class ClientThread extends Thread {
     	}
     	 
     }
+   
 
 	   
    
