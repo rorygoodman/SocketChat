@@ -40,9 +40,9 @@
       
   The server then sends the following to every client in the chatroom
   
-      CHAT: [ROOM_REF]
-		  CLIENT_NAME: [string identifying client user]
-		  MESSAGE: [string terminated with '\n\n']
+     	CHAT: [ROOM_REF]
+		CLIENT_NAME: [string identifying client user]
+		MESSAGE: [string terminated with '\n\n']
       
   
 
